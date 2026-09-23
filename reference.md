@@ -1,20 +1,20 @@
 # Personal folder taxonomy (reference)
 
-Untuk skill `workspace-hygiene` - folder pribadi (Downloads, Desktop, dll.).
+For the `workspace-hygiene` skill — personal folders (Downloads, Desktop, etc.).
 
-## Coding projects - pindah utuh (jangan pecah isi)
+## Coding projects — move intact (do not split contents)
 
-Deteksi folder anak sebagai project -> pindah ke `Projects/<Stack>/<nama-folder>/`.
+Detect child folders as projects -> move to `Projects/<Stack>/<folder-name>/`.
 
-| Stack | Sinyal deteksi |
+| Stack | Detection signal |
 |-------|----------------|
 | Laravel | `artisan` + `composer.json` |
-| PHP | `composer.json` (tanpa `artisan`) |
+| PHP | `composer.json` (without `artisan`) |
 | Node | `package.json` |
 | NextJS | `package.json` + `next.config.*` |
 | Vue | `package.json` + vue/nuxt config |
 | Angular | `angular.json` |
-| Python | `pyproject.toml` atau `requirements.txt` + entry app |
+| Python | `pyproject.toml` or `requirements.txt` + app entry |
 | Django | `manage.py` |
 | DotNet | `*.sln` / `*.csproj` |
 | Go | `go.mod` |
@@ -23,41 +23,41 @@ Deteksi folder anak sebagai project -> pindah ke `Projects/<Stack>/<nama-folder>
 | Rails | `Gemfile` + `config/application.rb` |
 | GitProject | `.git` + (`src`/`lib`/`app`) fallback |
 
-**Wajib:** jangan sort file di dalam project (`vendor/`, `node_modules/`, `app/`, ...).
+**Required:** do not sort files inside a project (`vendor/`, `node_modules/`, `app/`, ...).
 
-## Mode `by-type` - file lepas saja
+## Mode `by-type` — loose files only
 
-| Kategori | Folder | Ekstensi (contoh) |
-|----------|--------|-------------------|
+| Category | Folder | Extensions (examples) |
+|----------|--------|---------------------------|
 | Images | `Images` | `.png` `.jpg` `.jpeg` `.webp` `.gif` `.bmp` `.tif` `.tiff` `.heic` `.svg` `.ico` |
 | Videos | `Videos` | `.mp4` `.mkv` `.mov` `.webm` `.avi` `.wmv` `.m4v` |
 
-## Videos - kumpulkan per kategori folder sumber
+## Videos — collect by source folder category
 
-Saat mengumpulkan video lintas drive (script `collect-videos.ps1`):
+When collecting videos across drives (script `collect-videos.ps1`):
 
-| Aturan | Perilaku |
+| Rule | Behavior |
 |--------|----------|
-| Exclude eksplisit | Jangan sentuh path yang user kecualikan (contoh: `D:\Anis`, `explore`, `UnityProjects`) |
-| Kategori | Pindah ke `Videos/<nama-folder-induk>/` - pakai **nama folder tempat file berada**, bukan flat dump |
-| Project Unity | Skip video di dalam project (`Assets/` + `ProjectSettings/`) |
-| Sudah flat | Heuristik nama file (Telegram, Screen Recordings, Camera/VID_, dll.) bila folder asal tidak diketahui |
+| Explicit exclude | Do not touch paths the user excludes (e.g. `D:\Anis`, `explore`, `UnityProjects`) |
+| Category | Move to `Videos/<parent-folder-name>/` — use **the folder where the file lives**, not a flat dump |
+| Unity project | Skip videos inside projects (`Assets/` + `ProjectSettings/`) |
+| Already flat | File-name heuristics (Telegram, Screen Recordings, Camera/VID_, etc.) when source folder is unknown |
 
 ```powershell
 .\ai-agents-rogue\scripts\collect-videos.ps1 -SourcePaths 'D:\BrankasDigital','D:\Download' -ExcludeRoots 'D:\ZonaKreatif\explore','D:\Anis' -Apply
 ```
 
-## Photos - kumpulkan per kategori folder sumber
+## Photos — collect by source folder category
 
-Hanya path yang user tentukan (contoh satu subfolder atau beberapa folder media):
+Only user-specified paths (e.g. one subfolder or several media folders):
 
-| Aturan | Perilaku |
+| Rule | Behavior |
 |--------|----------|
-| Scope | Hanya folder sumber yang disebut user - jangan recurse drive penuh tanpa izin |
-| Kategori | `Photos/<nama-folder-induk>/` (folder tempat file berada) |
-| Exclude | `Anis`, `explore`, `Installers`/`Packages`/`ISO`, `UnityProjects`, project Unity (`Assets`+`ProjectSettings`), project coding (`package.json`, `composer.json`, dll.) |
-| Skip asset | Unity `Assets/`, `Downloads/Compressed`, addon/extension/mockup/template, folder `icons`/`demo`/`textures`/`logo` di paket download, file dengan `.meta`, texture maps (diffuse/normal/albedo), mockup preview |
-| `.jpg.rigj` | Valid (header+footer JPEG) -> buang `.rigj`. Rusak -> `Photos/<kategori>/_rusak/` |
+| Scope | Only source folders the user names — do not recurse a full drive without permission |
+| Category | `Photos/<parent-folder-name>/` (folder where the file lives) |
+| Exclude | `Anis`, `explore`, `Installers`/`Packages`/`ISO`, `UnityProjects`, Unity projects (`Assets`+`ProjectSettings`), coding projects (`package.json`, `composer.json`, etc.) |
+| Skip assets | Unity `Assets/`, `Downloads/Compressed`, addon/extension/mockup/template, `icons`/`demo`/`textures`/`logo` folders in download packages, files with `.meta`, texture maps (diffuse/normal/albedo), mockup previews |
+| `.jpg.rigj` | Valid (header+footer JPEG) -> strip `.rigj`. Corrupt -> `Photos/<category>/_corrupt/` |
 
 ```powershell
 .\ai-agents-rogue\scripts\collect-photos.ps1 -SourcePaths 'D:\BrankasDigital','D:\Foto','D:\Download' -ExcludeRoots 'D:\Anis','D:\ZonaKreatif\explore','D:\Installers' -Apply
@@ -68,25 +68,25 @@ Hanya path yang user tentukan (contoh satu subfolder atau beberapa folder media)
 | Archives | `Archives` | `.zip` `.rar` `.7z` `.tar` `.gz` `.bz2` |
 | Installers | `Installers` | `.exe` `.msi` `.msix` `.dmg` `.apk` `.iso` `.img` `.appimage` |
 
-## Installers - aturan paket utuh
+## Installers — whole-package rules
 
-Saat mengumpulkan installer (skill `workspace-hygiene`, script `collect-installers.ps1`):
+When collecting installers (skill `workspace-hygiene`, script `collect-installers.ps1`):
 
-| Bentuk | Perilaku | Contoh tujuan |
+| Form | Behavior | Example destination |
 |--------|----------|---------------|
-| File standalone | Pindah file saja | `Installers/CursorUserSetup-x64-3.9.16.exe` |
-| ISO / image boot | Pindah utuh | `Installers/ISO/ubuntu-24.10-desktop-amd64.iso` |
-| Folder paket | Pindah **seluruh folder** - jangan hanya `Setup.exe` atau `.AppImage` | `Installers/Packages/Navicat Premium 16.1.2 Linux64/` |
-| AppImage sepaket | `.AppImage` + file/folder pendukung di folder yang sama -> pindah folder induk utuh | `Installers/Packages/.../` |
-| Arsip installer | Pindah **seluruh** `.zip`/`.rar`/`.7z` yang jelas distribusi installer | `Installers/Packages/flutter_windows_3.32.5-stable.zip` |
+| Standalone file | Move file only | `Installers/CursorUserSetup-x64-3.9.16.exe` |
+| ISO / boot image | Move whole file | `Installers/ISO/ubuntu-24.10-desktop-amd64.iso` |
+| Package folder | Move **entire folder** — not only `Setup.exe` or `.AppImage` | `Installers/Packages/Navicat Premium 16.1.2 Linux64/` |
+| AppImage bundle | `.AppImage` + support files/folders in the same folder -> move whole parent folder | `Installers/Packages/.../` |
+| Installer archive | Move **entire** `.zip`/`.rar`/`.7z` clearly meant as installer distribution | `Installers/Packages/flutter_windows_3.32.5-stable.zip` |
 
-**Wajib:**
+**Required:**
 
-- Deteksi paket: `Setup.exe` / `Install.exe` **atau** `.AppImage` + file/folder pendukung -> pindah folder induk paket.
-- Folder bundle installer (WinRAR, RUFUS, Adobe, IObit, dll.): `ReadMe (How to Install).txt`, subfolder `Crack`, `BlockHost*.cmd`, atau `.rar` besar -> pindah **seluruh folder** meski `Setup.exe` sudah pernah dipindah terpisah.
-- Dedupe versi: simpan **hanya versi terbaru** per keluarga app (bandingkan angka versi + tanggal modifikasi).
-- Jangan jalankan installer; hanya `Move-Item`.
-- Jangan pecah isi paket (keygen/crack tetap ikut folder - user yang review).
+- Package detection: `Setup.exe` / `Install.exe` **or** `.AppImage` + support files/folders -> move parent package folder.
+- Installer bundle folders (WinRAR, RUFUS, Adobe, IObit, etc.): `ReadMe (How to Install).txt`, `Crack` subfolder, `BlockHost*.cmd`, or large `.rar` -> move **entire folder** even if `Setup.exe` was moved separately before.
+- Version dedupe: keep **only the latest version** per app family (compare version numbers + modification date).
+- Do not run installers; only `Move-Item`.
+- Do not split package contents (keygen/crack stay with folder — user reviews).
 
 **Helper:**
 
@@ -94,34 +94,34 @@ Saat mengumpulkan installer (skill `workspace-hygiene`, script `collect-installe
 .\ai-agents-rogue\scripts\collect-installers.ps1 -SourcePaths 'D:\Download','D:\BrankasDigital'
 .\ai-agents-rogue\scripts\collect-installers.ps1 -SourcePaths 'D:\Download' -Apply -Dedupe
 ```
-| Code | `Code` | file kode **lepas** (bukan isi project) |
-| Other | `Other` | sisanya |
+| Code | `Code` | **loose** code files (not inside a project) |
+| Other | `Other` | remainder |
 
 ## Mode `by-extension`
 
-Hanya untuk **file lepas**. Project tetap ke `Projects/<Stack>/`.
+For **loose files** only. Projects still go to `Projects/<Stack>/`.
 
-## Mode `by-face` (hanya jika diminta)
+## Mode `by-face` (only if requested)
 
-Cluster gambar berdasarkan wajah (lokal, DeepFace/Facenet):
+Cluster images by face (local, DeepFace/Facenet):
 
-| Hasil | Folder |
+| Result | Folder |
 |-------|--------|
-| Orang terdeteksi (cluster) | `Faces/Person_001/`, `Person_002/`, ... |
-| Tidak ada wajah | `Faces/NoFace/` |
+| Person detected (cluster) | `Faces/Person_001/`, `Person_002/`, ... |
+| No face | `Faces/NoFace/` |
 
 - Deps: `pip install -r ai-agents-rogue/scripts/organize-by-face.requirements.txt`
 - Script: `organize-by-face.py` via `-Mode by-face`
-- Foto multi-wajah: memakai wajah terbesar sebagai label utama
-- Akurasi tidak sempurna; rename folder Person_xxx ke nama orang boleh manual setelah review
+- Multi-face photos: use largest face as primary label
+- Accuracy is not perfect; renaming `Person_xxx` folders to a person's name may be done manually after review
 
 ## Depth
 
-| Opsi | Perilaku |
+| Option | Behavior |
 |------|----------|
-| Flat (default) | File di root + folder project di root |
-| Recurse | File lebih dalam, **tetap skip** isi coding project |
+| Flat (default) | Files at root + project folders at root |
+| Recurse | Deeper files, **still skip** coding project contents |
 
-## Path terlarang
+## Forbidden paths
 
-`C:\Windows`, Program Files, root drive mentah (`C:\`).
+`C:\Windows`, Program Files, raw drive root (`C:\`).
